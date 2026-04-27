@@ -1,108 +1,20 @@
-# Interview Prep Platform - Frontend
+# Frontend
 
-A **React + Vite + Tailwind CSS** single-page application for interview preparation. Users can create interview sessions, generate AI-powered questions, track progress, and review explanations on an intuitive dashboard.
+React + Vite interview prep application.
 
----
-
-## 1. Frontend Overview
-
-This frontend app is built with:
-- **React 18+** for UI components and state management
-- **Vite** for fast dev server and optimized builds
-- **Tailwind CSS** for utility-first styling
-- **Axios** for API communication
-- **Context API** for lightweight state management (user, auth)
-- **React Router** (if configured) for multi-page navigation
-
-The app communicates with the backend via REST APIs and handles authentication using JWT tokens stored in localStorage.
-
----
-
-## 2. Folder Structure
-
-```
-src/
-  pages/
-    LandingPage.jsx              # Public landing/welcome page
-    Auth/
-      Login.jsx                  # User login form
-      SignUp.jsx                 # User registration form
-    Home/
-      Dashboard.jsx              # Main dashboard with sessions/questions
-      CreateSessionForm.jsx      # Form to create new interview sessions
-    InterviewPrep/
-      InterviewPrep.jsx          # Interview prep interface
-      components/
-        AIResponsePreview.jsx    # AI-generated question preview
-        RoleInfoHeader.jsx       # Role/topic header info
-  
-  components/
-    Drawer.jsx                   # Side drawer/navigation
-    Modal.jsx                    # Reusable modal component
-    ProfilePhotoSelector.jsx     # Photo upload for profile
-    Auth/                        # Auth-related components
-    Cards/
-      ProfileInfoCard.jsx        # User profile card
-      QuestionCard.jsx           # Question display card
-      SummaryCard.jsx            # Session summary card
-    Inputs/
-      Input.jsx                  # Reusable input field
-    layouts/
-      DashboardLayout.jsx        # Dashboard layout wrapper
-      Navbar.jsx                 # Top navigation bar
-    Loader/
-      SkeletonLoader.jsx         # Skeleton loading UI
-      SpinnerLoader.jsx          # Spinning loader
-  
-  context/
-    userContext.jsx              # User/auth state (Context API)
-  
-  utils/
-    apiPaths.js                  # API endpoint constants
-    axiosInstance.js             # Axios client with interceptors
-    data.js                      # Mock/local data
-    helper.js                    # Helper functions (date, format, etc.)
-    uploadImage.js               # Image upload utility
-  
-  App.jsx                        # Root component
-  main.jsx                       # Entry point
-  index.css                      # Global styles
-
-public/                          # Static assets
-tailwind.config.js               # Tailwind CSS configuration
-vite.config.js                   # Vite configuration
-package.json                     # Dependencies and scripts
+## Setup
+```bash
+npm install
+npm run dev
 ```
 
----
-
-## 3. How Frontend Works (Step-by-Step Flow)
-
-1. **User Visits App**
-   - Browser loads `index.html` → loads `main.jsx` → renders `App.jsx`
-
-2. **Landing/Auth Page**
-   - User lands on `LandingPage.jsx` or redirected to `SignUp.jsx`/`Login.jsx`
-   - User enters credentials → sends `POST /auth/register` or `POST /auth/login`
-   - Backend validates and returns JWT token
-   - Frontend stores token in localStorage via `userContext.jsx`
-
-3. **Dashboard**
-   - After login, user navigates to `Dashboard.jsx` (inside `DashboardLayout.jsx` wrapper)
-   - Displays:
-     - User profile card (from `ProfileInfoCard.jsx`)
-     - List of sessions (from `sessionContext` or API call)
-     - Quick action to create new session
-
-4. **Create Session**
-   - User clicks "Create Session" → `CreateSessionForm.jsx` modal opens
-   - Form takes: role, focus area, experience level
-   - Submits `POST /sessions` with JWT token in headers
-   - Backend creates session in MongoDB
-   - Frontend updates dashboard
-
-5. **Generate Questions**
-   - User clicks "Generate Questions" for a session
+## Features
+- User authentication (JWT)
+- Create & manage interview sessions
+- View AI-generated questions
+- Track performance & progress
+- Upload profile photos
+- Real-time session tracking
    - Frontend calls `POST /ai/generate-questions` with session ID
    - Backend generates AI prompts and questions
    - Questions stored in MongoDB

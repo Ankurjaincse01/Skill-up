@@ -1,53 +1,39 @@
-# Interview Prep AI - Backend Structure
+# Backend - Node.js + Express
+
+REST API server for Interview Prep platform with MongoDB, JWT auth, and AI integration.
+
+## Tech Stack
+- Node.js, Express, MongoDB, JWT, Cloudinary
+- AI APIs: OpenAI, Google Gemini, Groq
+
+## Setup
+```bash
+npm install
+cp .env.example .env
+npm run dev
+```
 
 ## Project Structure
-
 ```
 backend/
-├── config/
-│   └── db.js                 # MongoDB database configuration
-├── controllers/
-│   ├── authController.js     # Authentication logic (signup, login)
-│   ├── userController.js     # User profile management
-│   ├── questionController.js # Interview questions management
-│   └── sessionController.js  # Practice session management
-├── middlewares/
-│   ├── authMiddleware.js     # JWT authentication middleware
-│   ├── errorHandler.js       # Global error handling
-│   └── uploadMiddleware.js   # File upload handling
-├── models/
-│   ├── User.js               # User schema
-│   ├── Question.js           # Question schema
-│   └── Session.js            # Session schema
-├── routes/
-│   ├── authRoutes.js         # Auth endpoints
-│   ├── userRoutes.js         # User endpoints
-│   ├── questionRoutes.js     # Question endpoints
-│   └── sessionRoutes.js      # Session endpoints
-├── utils/
-│   ├── aiHelper.js           # AI-related utility functions
-│   └── responseHandler.js    # Response formatting utilities
-├── uploads/                  # Uploaded files directory
-├── .env                      # Environment variables
-├── .env.example              # Example environment file
-├── server.js                 # Main server file
-├── package.json              # Dependencies
-└── README.md                 # This file
+├── config/       # db.js (MongoDB config)
+├── controllers/  # authController, aiController, questionController, sessionController
+├── models/       # User, Question, Session schemas
+├── routes/       # authRoutes, questionRoutes, sessionRoutes
+├── middlewares/  # authMiddleware, uploadMiddleware
+├── utils/        # emailService, prompts
+└── server.js     # Entry point
 ```
 
-## File Descriptions
+## Key Endpoints
+- `POST /auth/signup` - User registration
+- `POST /auth/login` - User login
+- `GET /questions` - Get questions
+- `POST /sessions` - Create session
+- `POST /ai/generate-question` - AI question generation
 
-### Config
-- **db.js** - MongoDB connection setup
-
-### Controllers
-- **authController.js** - Handles user signup and login
-- **userController.js** - Profile retrieval and updates
-- **questionController.js** - CRUD operations for interview questions
-- **sessionController.js** - Create and manage practice sessions
-
-### Middlewares
-- **authMiddleware.js** - Validates JWT tokens
+## Environment Variables
+See `.env.example` for all required variables (MongoDB, JWT secret, API keys, etc.)
 - **errorHandler.js** - Centralized error handling
 - **uploadMiddleware.js** - Handles file uploads with multer
 
