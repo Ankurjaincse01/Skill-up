@@ -21,20 +21,6 @@ npm run dev
 - `POST /sessions` - Create session
 - `POST /ai/generate-question` - Generate question
 - `POST /ai/evaluate-answer` - Evaluate answer
-
-## Running
-
-Development:
-```bash
-npm run dev
-```
-
-Production:
-```bash
-npm start
-```
-
-Backend runs on: http://localhost:5000
 ```
 POST /auth/upload-image
 Content-Type: multipart/form-data
