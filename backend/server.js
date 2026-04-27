@@ -41,8 +41,8 @@ app.use("/auth", authRoutes);
 app.use("/sessions", sessionRoutes);
 app.use("/questions", questionRoutes);
 
-// AI Routes
-app.post("/ai/generate-questions", protect, generateInterviewQuestions);
+// AI Routes (Public - no auth required for question generation)
+app.post("/ai/generate-questions", generateInterviewQuestions);
 app.post("/ai/generate-explanation", protect, generateConceptExplanation);
 
 // Start Server
