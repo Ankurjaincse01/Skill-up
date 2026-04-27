@@ -1,10 +1,6 @@
-# Backend - Node.js + Express
+# Backend
 
-REST API server for Interview Prep platform with MongoDB, JWT auth, and AI integration.
-
-## Tech Stack
-- Node.js, Express, MongoDB, JWT, Cloudinary
-- AI APIs: OpenAI, Google Gemini, Groq
+Node.js + Express REST API server for interview prep platform.
 
 ## Setup
 ```bash
@@ -13,71 +9,32 @@ cp .env.example .env
 npm run dev
 ```
 
-## Project Structure
-```
-backend/
-├── config/       # db.js (MongoDB config)
-├── controllers/  # authController, aiController, questionController, sessionController
-├── models/       # User, Question, Session schemas
-├── routes/       # authRoutes, questionRoutes, sessionRoutes
-├── middlewares/  # authMiddleware, uploadMiddleware
-├── utils/        # emailService, prompts
-└── server.js     # Entry point
-```
+## Tech Stack
+- Node.js, Express, MongoDB, JWT
+- Cloudinary, Nodemailer
+- AI: OpenAI, Google Gemini, Groq
 
 ## Key Endpoints
-- `POST /auth/signup` - User registration
-- `POST /auth/login` - User login
+- `POST /auth/signup` - Register
+- `POST /auth/login` - Login
 - `GET /questions` - Get questions
 - `POST /sessions` - Create session
-- `POST /ai/generate-question` - AI question generation
+- `POST /ai/generate-question` - Generate question
+- `POST /ai/evaluate-answer` - Evaluate answer
 
-## Environment Variables
-See `.env.example` for all required variables (MongoDB, JWT secret, API keys, etc.)
-- **errorHandler.js** - Centralized error handling
-- **uploadMiddleware.js** - Handles file uploads with multer
+## Running
 
-### Models
-- **User.js** - User information schema
-- **Question.js** - Interview question schema
-- **Session.js** - Practice session data schema
+Development:
+```bash
+npm run dev
+```
 
-### Routes
-- **authRoutes.js** - `/auth/signup`, `/auth/login`
-- **userRoutes.js** - `/user/profile` endpoints
-- **questionRoutes.js** - `/questions` CRUD endpoints
-- **sessionRoutes.js** - `/sessions` management endpoints
+Production:
+```bash
+npm start
+```
 
-### Utils
-- **aiHelper.js** - AI question generation and feedback (TODO: Integrate with Google Genai)
-- **responseHandler.js** - Standardized response formatting
-
----
-
-## Image Upload & Cloudinary Integration
-
-**Profile photos and images are stored in Cloudinary cloud storage**, not locally.
-
-### How It Works:
-1. **Frontend** sends image file to `/auth/upload-image` endpoint (multipart/form-data)
-2. **uploadMiddleware.js** intercepts with Cloudinary storage:
-   - Validates file type (jpg, jpeg, png only)
-   - Uploads to Cloudinary folder: `interview-prep/profile-photos/`
-   - Returns secure Cloudinary URL
-3. **Frontend** receives URL and includes in signup/profile update payload
-4. **Backend** stores Cloudinary URL in MongoDB User document
-
-### Cloudinary Setup:
-- **Dependencies**: `cloudinary`, `multer-storage-cloudinary`
-- **Env Variables Required**:
-  ```env
-  CLOUDINARY_CLOUD_NAME=your_cloudinary_cloud_name
-  CLOUDINARY_API_KEY=your_cloudinary_api_key
-  CLOUDINARY_API_SECRET=your_cloudinary_api_secret
-  ```
-- **See**: [CLOUDINARY_SETUP.md](./CLOUDINARY_SETUP.md) for detailed configuration
-
-### Image Upload Endpoint:
+Backend runs on: http://localhost:5000
 ```
 POST /auth/upload-image
 Content-Type: multipart/form-data
