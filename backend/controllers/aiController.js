@@ -1,6 +1,10 @@
-// Import Groq AI SDK and prompt templates
+// Import Google Generative AI SDK and prompt templates
+// const { GoogleGenerativeAI } = require("@google/generative-ai");
 const Groq = require("groq-sdk");
 const { questionAnswerPrompt, conceptExplainPrompt } = require("../utils/prompts");
+
+// const genAI = new GoogleGenerativeAI(process.env.GEMINI_API_KEY);
+// const model = genAI.getGenerativeModel({ model: "gemini-2.0-flash" });
 
 const groq = new Groq({
   apiKey: process.env.GROQ_API_KEY,
@@ -94,13 +98,6 @@ const generateInterviewQuestions = async (req, res) => {
   try {
     const { role, experience, topicsToFocus, numberOfQuestions } = req.body;
 
-    // Validate required fields
-    if (!role || !experience || !topicsToFocus || numberOfQuestions === undefined) {
-      return res.status(400).json({
-        message: "Missing required fields: role, experience, topicsToFocus, numberOfQuestions",
-      });
-    }
-
     let count = parseInt(numberOfQuestions) || 10;
     if (count > 20) count = 20;
     if (count < 0) count = 0;
@@ -110,8 +107,6 @@ const generateInterviewQuestions = async (req, res) => {
       : String(topicsToFocus);
 
     const prompt = questionAnswerPrompt(role, experience, topics, count);
-
-    console.log("[Groq AI] Sending request with prompt...");
 
     // --- Groq Implementation ---
     const chatCompletion = await groq.chat.completions.create({
@@ -132,12 +127,9 @@ const generateInterviewQuestions = async (req, res) => {
 
     const data = safeJSONParse(cleanedText);
 
-    console.log("[Groq AI] ✅ Successfully generated questions");
     return res.status(200).json(data);
   } catch (error) {
-    console.error("[Groq AI] ❌ Error:", error);
-    console.error("[Groq AI] Error Message:", error.message);
-    console.error("[Groq AI] Error Stack:", error.stack);
+    console.error("[Groq AI] Error:", error.message);
     return res.status(500).json({
       message: "Failed to generate questions",
       error: error.message,

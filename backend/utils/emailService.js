@@ -1,12 +1,31 @@
 const nodemailer = require("nodemailer");
 
-// Configure nodemailer with Gmail SMTP (ONLY)
+// Direct SMTP with SSL (port 465) + connection pooling for fast email delivery
+// Using pool:true means one persistent connection is reused instead of creating
+// a new TCP connection for every email (which was causing 5-10s delays)
 const transporter = nodemailer.createTransport({
-  service: "gmail",
+  host: "smtp.gmail.com",
+  port: 465,
+  secure: true,           // SSL — fastest & most reliable for Gmail
+  pool: true,             // Reuse connections — no new handshake per email
+  maxConnections: 3,
+  maxMessages: 100,
   auth: {
     user: process.env.EMAIL_USER,
-    pass: process.env.EMAIL_PASS,
+    pass: process.env.EMAIL_PASS?.replace(/\s/g, ""), // strip any spaces from app password
   },
+  tls: {
+    rejectUnauthorized: false,  // avoids cert issues on local/dev
+  },
+});
+
+// Verify connection on startup (logs error early if credentials are wrong)
+transporter.verify((error) => {
+  if (error) {
+    console.error("❌ Email transporter error:", error.message);
+  } else {
+    console.log("✅ Email transporter ready");
+  }
 });
 
 // Generate random 6-digit OTP

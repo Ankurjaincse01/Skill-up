@@ -84,6 +84,19 @@ const Login = ({ setCurrentPage }) => {
           type="password"
         />
 
+        {/* Forgot Password Link */}
+        <div className="flex justify-end mt-1 mb-1">
+          <button
+            type="button"
+            className="text-xs text-primary hover:underline cursor-pointer"
+            onClick={() => {
+              if (setCurrentPage) setCurrentPage("forgot");
+            }}
+          >
+            Forgot password?
+          </button>
+        </div>
+
         {error && (
           <div className="pb-2.5">
             <p className="text-red-500 text-xs mb-2">{error}</p>

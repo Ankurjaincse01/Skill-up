@@ -6,6 +6,9 @@ export const API_PATHS = {
     VERIFY_OTP: "/auth/verify-otp",
     LOGIN: "/auth/login",
     GET_PROFILE: "/auth/profile",
+    FORGOT_PASSWORD: "/auth/forgot-password",
+    VERIFY_RESET_OTP: "/auth/verify-reset-otp",
+    RESET_PASSWORD: "/auth/reset-password",
   },
   IMAGE: {
     UPLOAD_IMAGE: "/auth/upload-image",

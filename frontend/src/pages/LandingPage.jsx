@@ -4,6 +4,7 @@ import { LuMail, LuGraduationCap, LuPin, LuSparkles, LuCode } from 'react-icons/
 import Modal from "../components/Modal";
 import Login from "./Auth/Login";
 import SignUp from "./Auth/SignUp";
+import ForgotPassword from "./Auth/ForgotPassword";
 import ProfileInfoCard from "../components/Cards/ProfileInfoCard";
 import { UserContext } from "../context/userContext";
 
@@ -134,6 +135,9 @@ const LandingPage = () => {
                     )}
                     {currentPage === "signup" && (
                         <SignUp setCurrentPage={setCurrentPage} />
+                    )}
+                    {currentPage === "forgot" && (
+                        <ForgotPassword setCurrentPage={setCurrentPage} />
                     )}
                 </div>
             </Modal>

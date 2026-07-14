@@ -27,14 +27,22 @@ connectDB();
 
 // Middleware
 app.use(express.json());
+// Health check route
+app.get('/test', (req, res) => {
+  res.send('Ankur Jain');
+});
+
+// Note: Images are now stored in Cloudinary cloud storage, not local
+// Local uploads folder is no longer needed
+// app.use("/uploads", express.static(path.join(__dirname, "uploads")));
 
 // Routes
 app.use("/auth", authRoutes);
 app.use("/sessions", sessionRoutes);
 app.use("/questions", questionRoutes);
 
-// AI Routes (Public - no auth required for question generation)
-app.post("/ai/generate-questions", generateInterviewQuestions);
+// AI Routes
+app.post("/ai/generate-questions", protect, generateInterviewQuestions);
 app.post("/ai/generate-explanation", protect, generateConceptExplanation);
 
 // Start Server
