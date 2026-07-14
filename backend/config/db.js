@@ -6,9 +6,7 @@ const connectDB = async () => {
     console.log("MongoDB Connected");
   } catch (error) {
     console.error("MongoDB Connection Error:", error.message);
-    console.warn("⚠️ Backend is running, but database features will not work until MongoDB Atlas is resumed.");
-    // Temporarily disabled so the backend stops crashing for you:
-    // process.exit(1);
+    process.exit(1);
   }
 };
 

@@ -27,14 +27,6 @@ connectDB();
 
 // Middleware
 app.use(express.json());
-// Health check route
-app.get('/test', (req, res) => {
-  res.send('Ankur Jain');
-});
-
-// Note: Images are now stored in Cloudinary cloud storage, not local
-// Local uploads folder is no longer needed
-// app.use("/uploads", express.static(path.join(__dirname, "uploads")));
 
 // Routes
 app.use("/auth", authRoutes);
