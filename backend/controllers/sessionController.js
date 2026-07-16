@@ -2,15 +2,13 @@ const Session = require("../models/Session");
 const Question = require("../models/Question");
 const mongoose = require("mongoose");
 
-// @desc    Create a new session
-// @route   POST /api/sessions/create
-// @access  Private
+// POST /sessions/create — create session and save AI questions
 exports.createSession = async (req, res) => {
   try {
     const { role, experience, topicsToFocus, description, questions } = req.body;
     const userId = req.user._id;
 
-    // Create new session
+
     const session = await Session.create({
       user: userId,
       role,
@@ -21,7 +19,7 @@ exports.createSession = async (req, res) => {
 
     console.log("[SessionController] Session created:", session._id);
 
-    // Create questions linked to session
+    // create and link questions if provided
     if (questions && questions.length > 0) {
       console.log("[SessionController] Storing questions...");
       const questionDocs = await Promise.all(
@@ -50,9 +48,7 @@ exports.createSession = async (req, res) => {
   }
 };
 
-// @desc    Get all sessions for logged-in user
-// @route   GET /api/sessions/my-sessions
-// @access  Private
+// GET /sessions/my-sessions — fetch all sessions for current user
 exports.getMySessions = async (req, res) => {
   try {
     const userId = req.user._id;
@@ -71,9 +67,7 @@ exports.getMySessions = async (req, res) => {
   }
 };
 
-// @desc    Get a session by ID with populated questions
-// @route   GET /api/sessions/:id
-// @access  Private
+// GET /sessions/:id — get session with populated questions (pinned first)
 exports.getSessionById = async (req, res) => {
   try {
     if (!mongoose.Types.ObjectId.isValid(req.params.id)) {
@@ -99,9 +93,7 @@ exports.getSessionById = async (req, res) => {
   }
 };
 
-// @desc    Update session
-// @route   PUT /api/sessions/:id
-// @access  Private
+// PUT /sessions/:id — update session fields
 exports.updateSession = async (req, res) => {
   try {
     const { id } = req.params;
@@ -130,9 +122,7 @@ exports.updateSession = async (req, res) => {
   }
 };
 
-// @desc    Delete a session and its questions
-// @route   DELETE /api/sessions/:id
-// @access  Private
+// DELETE /sessions/:id — delete session and all its questions
 exports.deleteSession = async (req, res) => {
   try {
     if (!mongoose.Types.ObjectId.isValid(req.params.id)) {
@@ -145,17 +135,14 @@ exports.deleteSession = async (req, res) => {
       return res.status(404).json({ message: "Session not found" });
     }
 
-    // Check if the logged-in user owns this session
+    // only owner can delete
     if (session.user.toString() !== req.user.id) {
       return res
         .status(401)
         .json({ message: "Not authorized to delete this session" });
     }
 
-    // First, delete all questions linked to this session
-    await Question.deleteMany({ session: session._id });
-
-    // Then, delete the session
+    await Question.deleteMany({ session: session._id }); // cascade delete questions
     await session.deleteOne();
 
     return res.status(200).json({

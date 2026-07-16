@@ -23,7 +23,7 @@ const fileFilter = (req, file, cb) => {
 const storage = new CloudinaryStorage({
   cloudinary,
   params: {
-    folder: "interview-prep/profile-photos", // Folder in Cloudinary
+    folder: "interview-prep/profile-photos",
     resource_type: "auto",
     allowed_formats: ["jpg", "jpeg", "png"],
   },

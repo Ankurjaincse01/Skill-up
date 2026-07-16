@@ -1,16 +1,11 @@
-// Import Google Generative AI SDK and prompt templates
-// const { GoogleGenerativeAI } = require("@google/generative-ai");
 const Groq = require("groq-sdk");
 const { questionAnswerPrompt, conceptExplainPrompt } = require("../utils/prompts");
-
-// const genAI = new GoogleGenerativeAI(process.env.GEMINI_API_KEY);
-// const model = genAI.getGenerativeModel({ model: "gemini-2.0-flash" });
 
 const groq = new Groq({
   apiKey: process.env.GROQ_API_KEY,
 });
 
-// Custom JSON parser to handle improperly escaped JSON from AI responses
+// Robust JSON parser — strips markdown fences and fixes bad escapes from AI
 const safeJSONParse = (jsonString) => {
   try {
     return JSON.parse(jsonString);
@@ -21,7 +16,7 @@ const safeJSONParse = (jsonString) => {
       .replace(/```\s*$/i, '')
       .trim();
 
-    // Remove control characters outside of strings
+    // strip control chars outside strings
     cleaned = cleaned.replace(/[\x00-\x1F\x7F]/g, (match) => {
       if (match === '\n' || match === '\r' || match === '\t') {
         return match;
@@ -92,8 +87,7 @@ const safeJSONParse = (jsonString) => {
   }
 };
 
-// Generate interview questions using Groq AI (Gemini Alternative)
-// POST /ai/generate-questions
+// POST /ai/generate-questions — generate questions via Groq LLaMA
 const generateInterviewQuestions = async (req, res) => {
   try {
     const { role, experience, topicsToFocus, numberOfQuestions } = req.body;
@@ -108,7 +102,7 @@ const generateInterviewQuestions = async (req, res) => {
 
     const prompt = questionAnswerPrompt(role, experience, topics, count);
 
-    // --- Groq Implementation ---
+
     const chatCompletion = await groq.chat.completions.create({
       messages: [
         {
@@ -137,8 +131,7 @@ const generateInterviewQuestions = async (req, res) => {
   }
 };
 
-// Generate concept explanation using Groq AI
-// POST /ai/generate-explanation
+// POST /ai/generate-explanation — explain concept via Groq LLaMA
 const generateConceptExplanation = async (req, res) => {
   try {
     const { question } = req.body;

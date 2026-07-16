@@ -1,9 +1,7 @@
 const Question = require("../models/Question");
 const Session = require("../models/Session");
 
-// @desc    Add additional questions to an existing session
-// @route   POST /api/questions/add
-// @access  Private
+// POST /questions/add — bulk insert questions into a session
 exports.addQuestionsToSession = async (req, res) => {
   try {
     const { sessionId, questions } = req.body;
@@ -18,7 +16,7 @@ exports.addQuestionsToSession = async (req, res) => {
       return res.status(404).json({ message: "Session not found" });
     }
 
-    // Create new questions
+
     const createdQuestions = await Question.insertMany(
       questions.map((q) => ({
         session: sessionId,
@@ -27,7 +25,7 @@ exports.addQuestionsToSession = async (req, res) => {
       }))
     );
 
-    // Update session to include new question IDs
+    // link new question IDs to session
     session.questions.push(...createdQuestions.map((q) => q._id));
     await session.save();
 
@@ -41,9 +39,7 @@ exports.addQuestionsToSession = async (req, res) => {
   }
 };
 
-// @desc    Toggle pin status of a question
-// @route   POST /api/questions/:id/pin
-// @access  Private
+// POST /questions/:id/pin — toggle pin/unpin on a question
 exports.togglePinQuestion = async (req, res) => {
   try {
     const question = await Question.findById(req.params.id);
@@ -65,9 +61,7 @@ exports.togglePinQuestion = async (req, res) => {
   }
 };
 
-// @desc    Update question note
-// @route   POST /api/questions/:id/note
-// @access  Private
+// POST /questions/:id/note — add/update personal note on a question
 exports.updateQuestionNote = async (req, res) => {
   try {
     const { note } = req.body;

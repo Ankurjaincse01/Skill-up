@@ -8,9 +8,7 @@ const generateToken = (userId) => {
   return jwt.sign({ id: userId }, process.env.JWT_SECRET, { expiresIn: "7d" });
 };
 
-// @desc    Register a new user (with OTP verification)
-// @route   POST /api/auth/register
-// @access  Public
+// POST /auth/register — register user, send OTP
 const registerUser = async (req, res) => {
   try {
     const { name, email, password, profileImageUrl } = req.body;
@@ -38,19 +36,17 @@ const registerUser = async (req, res) => {
 
     // Generate OTP
     const otp = generateOTP();
-    const otpExpiry = new Date(Date.now() + 5 * 60 * 1000); // 5 minutes from now
+    const otpExpiry = new Date(Date.now() + 5 * 60 * 1000); // 5 min expiry
 
-    // Update or create user with OTP
+    // Update existing unverified user or create new
     let user = await User.findOne({ email });
     if (user) {
-      // If unverified user exists, update their details
       user.name = name;
       user.password = hashedPassword;
       user.profileImageUrl = profileImageUrl || null;
       user.otp = otp;
       user.otpExpiry = otpExpiry;
     } else {
-      // Create new unverified user
       user = await User.create({
         name,
         email,
@@ -69,7 +65,7 @@ const registerUser = async (req, res) => {
       return res.status(500).json({ message: "Failed to send OTP email", error: emailResult.error });
     }
 
-    // Return success message
+
     return res.status(200).json({
       success: true,
       message: "OTP sent to your email. Please verify to complete signup.",
@@ -82,9 +78,7 @@ const registerUser = async (req, res) => {
   }
 };
 
-// @desc    Verify OTP and complete registration
-// @route   POST /api/auth/verify-otp
-// @access  Public
+// POST /auth/verify-otp — verify OTP and complete signup
 const verifyOTP = async (req, res) => {
   try {
     const { email, otp } = req.body;
@@ -139,9 +133,7 @@ const verifyOTP = async (req, res) => {
   }
 };
 
-// @desc    Login user
-// @route   POST /api/auth/login
-// @access  Public
+// POST /auth/login — authenticate user, return JWT
 const loginUser = async (req, res) => {
   try {
     const { email, password } = req.body;
@@ -182,9 +174,7 @@ const loginUser = async (req, res) => {
   }
 };
 
-// @desc    Get user profile
-// @route   GET /api/auth/profile
-// @access  Private (Requires JWT)
+// GET /auth/profile — get logged-in user profile
 const getUserProfile = async (req, res) => {
   try {
     const user = await User.findById(req.user.id).select("-password -otp -otpExpiry");
@@ -204,9 +194,7 @@ const getUserProfile = async (req, res) => {
 };
 
 
-// @desc    Forgot password — send OTP to email
-// @route   POST /api/auth/forgot-password
-// @access  Public
+// POST /auth/forgot-password — send reset OTP
 const forgotPassword = async (req, res) => {
   try {
     const { email } = req.body;
@@ -225,9 +213,8 @@ const forgotPassword = async (req, res) => {
       });
     }
 
-    // Generate OTP
     const otp = generateOTP();
-    const otpExpiry = new Date(Date.now() + 10 * 60 * 1000); // 10 minutes
+    const otpExpiry = new Date(Date.now() + 10 * 60 * 1000); // 10 min expiry
 
     user.resetOtp = otp;
     user.resetOtpExpiry = otpExpiry;
@@ -248,9 +235,7 @@ const forgotPassword = async (req, res) => {
   }
 };
 
-// @desc    Verify reset OTP
-// @route   POST /api/auth/verify-reset-otp
-// @access  Public
+// POST /auth/verify-reset-otp — validate reset OTP
 const verifyResetOTP = async (req, res) => {
   try {
     const { email, otp } = req.body;
@@ -279,9 +264,7 @@ const verifyResetOTP = async (req, res) => {
   }
 };
 
-// @desc    Reset password with verified OTP
-// @route   POST /api/auth/reset-password
-// @access  Public
+// POST /auth/reset-password — set new password after OTP verified
 const resetPassword = async (req, res) => {
   try {
     const { email, otp, newPassword } = req.body;
@@ -307,11 +290,9 @@ const resetPassword = async (req, res) => {
       return res.status(400).json({ message: "OTP has expired. Please request a new one." });
     }
 
-    // Hash new password
     const salt = await bcrypt.genSalt(10);
     user.password = await bcrypt.hash(newPassword, salt);
-
-    // Clear reset OTP
+    // clear reset OTP
     user.resetOtp = null;
     user.resetOtpExpiry = null;
     await user.save();
